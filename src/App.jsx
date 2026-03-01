@@ -8,12 +8,16 @@ const translations = {
     analyze: "Analyze Plant",
     analyzing: "Analyzing Plant Health...",
     healthy: "Healthy",
-    disease: "Early Blight",
+    plant: "Plant",
+    diseaseLabel: "Disease",
     action: "Action Recommended",
     treatment: "Treatment Plan",
     cause: "Cause",
     start: "Start Again",
     changeLang: "Change Language",
+
+    plantName: "Tomato",
+    diseaseName: "Early Blight",
 
     causeText: "Fungal infection detected in early stage.",
     treatmentList: [
@@ -29,12 +33,16 @@ const translations = {
     analyze: "पौधे का विश्लेषण करें",
     analyzing: "पौधे की जांच हो रही है...",
     healthy: "स्वस्थ",
-    disease: "अर्ली ब्लाइट",
+    plant: "पौधा",
+    diseaseLabel: "रोग",
     action: "कार्रवाई की सिफारिश",
     treatment: "उपचार योजना",
     cause: "कारण",
     start: "फिर से शुरू करें",
     changeLang: "भाषा बदलें",
+
+    plantName: "टमाटर",
+    diseaseName: "अर्ली ब्लाइट",
 
     causeText: "प्रारंभिक अवस्था में फंगल संक्रमण पाया गया।",
     treatmentList: [
@@ -50,18 +58,22 @@ const translations = {
     analyze: "தாவரத்தை ஆய்வு செய்",
     analyzing: "தாவர ஆரோக்கியம் பரிசோதிக்கப்படுகிறது...",
     healthy: "ஆரோக்கியம்",
-    disease: "ஆர்லி ப்ளைட்",
+    plant: "தாவரம்",
+    diseaseLabel: "நோய்",
     action: "நடவடிக்கை பரிந்துரை",
     treatment: "சிகிச்சை திட்டம்",
     cause: "காரணம்",
     start: "மீண்டும் தொடங்கு",
     changeLang: "மொழியை மாற்று",
 
+    plantName: "தக்காளி",
+    diseaseName: "ஆர்லி ப்ளைட்",
+
     causeText: "ஆரம்ப நிலையில் பூஞ்சை தொற்று கண்டறியப்பட்டது.",
     treatmentList: [
       "பரிந்துரைக்கப்பட்ட பூஞ்சைநாசினி பயன்படுத்தவும்",
       "பாதிக்கப்பட்ட இலைகளை அகற்றவும்",
-      "தாவரத்தை নিয়மமாக பரிசோதிக்கவும்"
+      "தாவரத்தை নিয়মமாக பரிசோதிக்கவும்"
     ]
   },
 
@@ -71,12 +83,16 @@ const translations = {
     analyze: "మొక్కను విశ్లేషించండి",
     analyzing: "మొక్క ఆరోగ్యాన్ని విశ్లేషిస్తోంది...",
     healthy: "ఆరోగ్యకరం",
-    disease: "ఎర్లీ బ్లైట్",
+    plant: "మొక్క",
+    diseaseLabel: "రోగం",
     action: "చర్య సిఫార్సు",
     treatment: "చికిత్స ప్రణాళిక",
     cause: "కారణం",
     start: "మళ్లీ ప్రారంభించండి",
     changeLang: "భాష మార్చండి",
+
+    plantName: "టమోటా",
+    diseaseName: "ఎర్లీ బ్లైట్",
 
     causeText: "ప్రారంభ దశలో ఫంగల్ సంక్రమణ గుర్తించబడింది.",
     treatmentList: [
@@ -108,11 +124,9 @@ function App() {
 
     setTimeout(() => {
       const isHealthy = Math.random() > 0.5;
-      const confidence = Math.floor(Math.random() * 20) + 70;
 
       setResult({
-        status: isHealthy ? "healthy" : "disease",
-        confidence
+        isHealthy
       });
 
       setStep("result");
@@ -122,14 +136,13 @@ function App() {
   /* 🌍 LANGUAGE SCREEN */
   if (!language) {
     return (
-      <div style={styles.container}>
-        <div style={styles.langCard}>
+      <div className="container">
+        <div className="langCard">
           <h2>{translations.English.selectLang}</h2>
-
           {Object.keys(translations).map((lang) => (
             <button
               key={lang}
-              style={styles.langButton}
+              className="langButton"
               onClick={() => setLanguage(lang)}
             >
               {lang}
@@ -141,10 +154,10 @@ function App() {
   }
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
+    <div className="container">
+      <div className="card">
         <button
-          style={styles.langSwitch}
+          className="langSwitch"
           onClick={() => setLanguage(null)}
         >
           🌍 {t.changeLang}
@@ -152,26 +165,26 @@ function App() {
 
         {step === "capture" && (
           <>
-            <h1 style={styles.title}>{t.title}</h1>
+            <h1 className="title">{t.title}</h1>
 
-            <label style={styles.cameraCircle}>
+            <label className="cameraCircle">
               {image ? (
                 <img
                   src={URL.createObjectURL(image)}
                   alt="preview"
-                  style={styles.previewImage}
+                  className="previewImage"
                 />
               ) : "📷"}
               <input
                 type="file"
                 accept="image/*"
-                style={{ display: "none" }}
+                hidden
                 onChange={(e) => setImage(e.target.files[0])}
               />
             </label>
 
             <button
-              style={styles.button}
+              className="button"
               disabled={!image}
               onClick={handleAnalyze}
             >
@@ -183,20 +196,24 @@ function App() {
         {step === "loading" && (
           <>
             <h2>{t.analyzing}</h2>
-            <div style={styles.loader}></div>
+            <div className="loader"></div>
           </>
         )}
 
         {step === "result" && result && (
           <>
             <h2>
-              {result.status === "healthy"
-                ? `${t.healthy} – ${result.confidence}%`
-                : `${t.disease} – ${result.confidence}%`}
+              {t.plant}: {t.plantName}
             </h2>
 
+            <h3>
+              {result.isHealthy
+                ? `${t.diseaseLabel}: ${t.healthy}`
+                : `${t.diseaseLabel}: ${t.diseaseName}`}
+            </h3>
+
             <button
-              style={styles.button}
+              className="button"
               onClick={() => setStep("treatment")}
             >
               {t.action}
@@ -207,16 +224,16 @@ function App() {
         {step === "treatment" && (
           <>
             <h2>{t.treatment}</h2>
-            <p>{t.cause}: {t.causeText}</p>
+            <p><strong>{t.cause}:</strong> {t.causeText}</p>
 
-            <ul style={styles.list}>
+            <ul className="list">
               {t.treatmentList.map((item, index) => (
                 <li key={index}>{item}</li>
               ))}
             </ul>
 
             <button
-              style={styles.button}
+              className="button"
               onClick={() => {
                 setImage(null);
                 setStep("capture");
@@ -230,106 +247,5 @@ function App() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background:
-      "radial-gradient(circle at 20% 20%, rgba(34,197,94,0.25), transparent 40%), #000",
-    color: "white"
-  },
-
-  langCard: {
-    background: "rgba(20,40,30,0.7)",
-    padding: "40px",
-    borderRadius: "20px",
-    display: "flex",
-    flexDirection: "column",
-    gap: "15px",
-    width: "300px",
-    textAlign: "center"
-  },
-
-  langButton: {
-    padding: "12px",
-    borderRadius: "10px",
-    background: "rgba(34,197,94,0.2)",
-    border: "1px solid rgba(34,197,94,0.4)",
-    color: "white",
-    cursor: "pointer"
-  },
-
-  card: {
-    background: "rgba(20,40,30,0.6)",
-    padding: "40px",
-    borderRadius: "20px",
-    width: "400px",
-    textAlign: "center",
-    position: "relative"
-  },
-
-  langSwitch: {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    background: "transparent",
-    border: "none",
-    color: "#22c55e",
-    cursor: "pointer"
-  },
-
-  title: {
-    color: "#22c55e",
-    marginBottom: "20px"
-  },
-
-  cameraCircle: {
-    margin: "20px auto",
-    width: "120px",
-    height: "120px",
-    backgroundColor: "#22c55e",
-    borderRadius: "50%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: "40px",
-    cursor: "pointer",
-    overflow: "hidden"
-  },
-
-  previewImage: {
-    width: "100%",
-    height: "100%",
-    objectFit: "cover"
-  },
-
-  button: {
-    marginTop: "20px",
-    padding: "10px 20px",
-    borderRadius: "10px",
-    backgroundColor: "#16a34a",
-    color: "white",
-    border: "none",
-    cursor: "pointer"
-  },
-
-  loader: {
-    margin: "20px auto",
-    width: "50px",
-    height: "50px",
-    borderRadius: "50%",
-    border: "6px solid rgba(34,197,94,0.2)",
-    borderTop: "6px solid #22c55e",
-    animation: "spin 1s linear infinite"
-  },
-
-  list: {
-    textAlign: "left",
-    marginTop: "15px"
-  }
-};
 
 export default App;
