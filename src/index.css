@@ -20,7 +20,7 @@
     #000;
 }
 
-.card {
+.card, .langCard {
   background: rgba(20, 40, 30, 0.7);
   padding: 40px;
   border-radius: 20px;
@@ -30,11 +30,6 @@
 }
 
 .langCard {
-  background: rgba(20, 40, 30, 0.7);
-  padding: 40px;
-  border-radius: 20px;
-  width: 300px;
-  text-align: center;
   display: flex;
   flex-direction: column;
   gap: 15px;
@@ -114,6 +109,12 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.progressRing {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
 }
 
 .list {

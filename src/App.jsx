@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-/* 🌍 FULL TRANSLATIONS */
+/* 🌍 TRANSLATIONS */
 const translations = {
   English: {
     selectLang: "Select Language",
@@ -123,17 +123,18 @@ function App() {
     setStep("loading");
 
     setTimeout(() => {
-      const isHealthy = Math.random() > 0.5;
+      const confidence = Math.floor(Math.random() * 30) + 60; // 60–89
+      const isHealthy = confidence > 75;
 
       setResult({
-        isHealthy
+        isHealthy,
+        confidence
       });
 
       setStep("result");
     }, 2000);
   };
 
-  /* 🌍 LANGUAGE SCREEN */
   if (!language) {
     return (
       <div className="container">
@@ -202,15 +203,50 @@ function App() {
 
         {step === "result" && result && (
           <>
-            <h2>
-              {t.plant}: {t.plantName}
-            </h2>
+            <h2>{t.plant}: {t.plantName}</h2>
 
             <h3>
-              {result.isHealthy
-                ? `${t.diseaseLabel}: ${t.healthy}`
-                : `${t.diseaseLabel}: ${t.diseaseName}`}
+              {t.diseaseLabel}:{" "}
+              {result.isHealthy ? t.healthy : t.diseaseName}
             </h3>
+
+            <div className="progressRing">
+              <svg width="160" height="160">
+                <circle
+                  cx="80"
+                  cy="80"
+                  r="70"
+                  stroke="rgba(255,255,255,0.1)"
+                  strokeWidth="12"
+                  fill="none"
+                />
+                <circle
+                  cx="80"
+                  cy="80"
+                  r="70"
+                  stroke={result.isHealthy ? "#22c55e" : "#facc15"}
+                  strokeWidth="12"
+                  fill="none"
+                  strokeDasharray={2 * Math.PI * 70}
+                  strokeDashoffset={
+                    2 * Math.PI * 70 *
+                    (1 - result.confidence / 100)
+                  }
+                  strokeLinecap="round"
+                  transform="rotate(-90 80 80)"
+                />
+                <text
+                  x="50%"
+                  y="50%"
+                  textAnchor="middle"
+                  dy=".3em"
+                  fontSize="24"
+                  fill="white"
+                >
+                  {result.confidence}%
+                </text>
+              </svg>
+            </div>
 
             <button
               className="button"
